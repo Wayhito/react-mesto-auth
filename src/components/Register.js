@@ -1,9 +1,9 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Header from "./Header";
-import auth from "../utils/auth";
+// import auth from "../utils/auth";
 
-function Register({ handleShowInfoMessage }) {
+function Register( {handleRegistration} ) {
   const defaultValues = {
     email: "",
     password: "",
@@ -11,7 +11,7 @@ function Register({ handleShowInfoMessage }) {
 
   const [inputs, setInputs] = React.useState(defaultValues);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   function handleChange(event) {
     const value = event.target.value;
@@ -21,28 +21,12 @@ function Register({ handleShowInfoMessage }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    auth.register(inputs)
-      .then((res) => {
-        handleShowInfoMessage({
-          text: "Вы успешно зарегистрировались!",
-          isSuccess: true,
-        });
-        resetForm();
-        navigate("/sign-in");
-      })
-      
-      .catch((err) => {
-        const text = err.message || "Что-то пошло не так! Попробуйте еще раз.";
-        handleShowInfoMessage({
-          text: text,
-          isSuccess: false,
-        });
-      });
+    handleRegistration(inputs);
   }
 
-  function resetForm() {
-    setInputs({ ...defaultValues });
-  }
+  // function resetForm() {
+  //   setInputs({ ...defaultValues });
+  // }
 
   return (
     <>

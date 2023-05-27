@@ -1,9 +1,11 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Header from "./Header";
-import auth from "../utils/auth";
+// import auth from "../utils/auth";
+// import App from "./App";
 
-function Login({ handleShowInfoMessage, onLogin }) {
+function Login( {handleAuthorize} ) {
+
   const defaultValues = {
     email: "",
     password: "",
@@ -11,7 +13,7 @@ function Login({ handleShowInfoMessage, onLogin }) {
 
   const [inputs, setInputs] = React.useState(defaultValues);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   function handleChange(event) {
     const value = event.target.value;
@@ -21,27 +23,12 @@ function Login({ handleShowInfoMessage, onLogin }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    auth.authorize(inputs)
-
-      .then(res => {
-        if (res.token) localStorage.setItem('token', res.token);
-        resetForm();
-        onLogin();
-        navigate("/");
-      })
-
-      .catch((err) => {
-        const text = err.message || "Что-то пошло не так! Попробуйте еще раз.";
-        handleShowInfoMessage({
-          text: text,
-          isSuccess: false,
-        });
-      });
+    handleAuthorize(inputs);
   }
 
-  function resetForm() {
-    setInputs({ ...defaultValues });
-  }
+  // function resetForm() {
+  //   setInputs({ ...defaultValues });
+  // }
 
   return (
     <>

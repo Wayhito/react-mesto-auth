@@ -187,6 +187,13 @@ function App() {
 
   //Авторизация
 
+  const defaultValues = {
+    email: "",
+    password: "",
+  };
+
+  const [inputs, setInputs] = React.useState(defaultValues);
+
   function handleLogin() {
     setIsLoggedIn(true);
   }
@@ -194,6 +201,54 @@ function App() {
   function handleLogout() {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
+  }
+
+  function resetForm() {
+    setInputs({ ...defaultValues });
+  }
+
+  function handleAuthorize(inputs) {
+    auth.authorize(inputs)
+
+      .then(res => {
+        if (res.token) localStorage.setItem('token', res.token);
+        resetForm();
+        handleLogin();
+        navigate("/");
+      })
+
+      .catch((err) => {
+        const text = err.message || "Что-то пошло не так! Попробуйте еще раз.";
+        
+        handleShowInfoMessage({
+          text: text,
+          isSuccess: false,
+        });
+
+      });
+  }
+
+  function handleRegistration(inputs) {
+    auth.register(inputs)
+
+      .then((res) => {
+        handleShowInfoMessage({
+          text: "Вы успешно зарегистрировались!",
+          isSuccess: true,
+        });
+        resetForm();
+        navigate("/sign-in");
+      })
+      
+      .catch((err) => {
+        const text = err.message || "Что-то пошло не так! Попробуйте еще раз.";
+
+        handleShowInfoMessage({
+          text: text,
+          isSuccess: false,
+        });
+        
+      });
   }
 
   // Show-Info
@@ -224,9 +279,9 @@ function App() {
             }
           />
 
-          <Route path="/sign-up" element={<Register handleShowInfoMessage={handleShowInfoMessage}/>}/>
+          <Route path="/sign-up" element={<Register handleRegistration={handleRegistration} />}/>
 
-          <Route path="/sign-in" element={<Login handleShowInfoMessage={handleShowInfoMessage} onLogin={handleLogin}/>}/>
+          <Route path="/sign-in" element={<Login handleAuthorize={handleAuthorize} />}/>
 
           <Route path="*" element={isLoggedIn ? <Navigate to="/" /> : <Navigate to="/sign-in"/>}/>
 
